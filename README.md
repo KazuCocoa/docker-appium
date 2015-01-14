@@ -3,17 +3,17 @@
 Ubuntu 14.04 base.
 Appium and Android build environment with Docker.
 
+Docker Hub is https://registry.hub.docker.com/u/kazucocoa/docker_android_testpack/
 
-## Run
+## Run Appium
 ```
-$ docker build -t docker_appium ./
-```
-
-## Run
-```
-$ docker run -i -t docker_appium /bin/bash
+$ make dockerappium
 ```
 
+## Build
+```
+$ make dockerdebug
+```
 
 Run appium in background
 

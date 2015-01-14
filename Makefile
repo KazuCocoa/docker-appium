@@ -11,4 +11,4 @@ dockertest:
 	docker run -i -w "/home/appium" -t docker_android_testpack /bin/bash -c 'git clone https://github.com/KazuCocoa/sampleRoboletricTests.git && cd sampleRoboletricTests && TERM=dumb ./gradlew -i test'
 
 dockerpullimage:
-  docker pull kazucocoa/docker_android_testpack
+	docker pull kazucocoa/docker_android_testpack

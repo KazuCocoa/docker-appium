@@ -12,7 +12,7 @@ RUN apt-get install -y git openjdk-7-jdk lib32z1 lib32ncurses5 lib32bz2-1.0 g++-
 # Main Android SDK
 RUN wget -qO- "http://dl.google.com/android/android-sdk_r24.0.2-linux.tgz" | tar -zxv -C /usr/local
 ENV ANDROID_HOME /usr/local/android-sdk-linux
-RUN echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter platform-tools,build-tools-21.1.2,android-16,android-17,android-18,android-19,android-20,android-21,extra-android-support,extra-google-google_play_services,extra-google-m2repository,extra-android-m2repository,extra-google-gcm,extra-google-analytics_sdk_v2,extra-google-admob_ads_sdk,extra-intel-Hardware_Accelerated_Execution_Manager,sys-img-x86-android-19,sys-img-x86-android-20,sys-img-x86-android-21
+RUN echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter platform-tools,build-tools-21.1.2,android-16,android-18,android-21,extra-android-support,extra-google-google_play_services,extra-google-m2repository,extra-android-m2repository,extra-google-gcm,extra-google-analytics_sdk_v2,extra-google-admob_ads_sdk,extra-intel-Hardware_Accelerated_Execution_Manager,sys-img-x86-android-19,sys-img-x86-android-21
 
 # Install Android NDK.
 RUN wget -qO- "http://dl.google.com/android/ndk/android-ndk-r9d-linux-x86_64.tar.bz2" | tar -zxv -C /usr/local

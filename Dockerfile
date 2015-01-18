@@ -1,13 +1,16 @@
 FROM ubuntu:14.04
 MAINTAINER Kazuaki MATSUO
 
-# update apt-get
-RUN apt-get update
-RUN apt-get install -y wget zip curl && rm -rf /var/lib/apt/lists/*
+# use mirror server
+RUN echo "deb http://jp.archive.ubuntu.com/ubuntu/ trusty main universe"> /etc/apt/sources.list
 
-# install Android SDKs
+
+# update apt-get
+RUN dpkg --add-architecture i386
 RUN apt-get update
-RUN apt-get install -y git openjdk-7-jdk lib32z1 lib32ncurses5 lib32bz2-1.0 g++-multilib bison gperf libxml2-utils && rm -rf /var/lib/apt/lists/*
+RUN apt-get install -y wget zip curl git
+RUN apt-get install -y openjdk-7-jdk lib32z1 lib32ncurses5 lib32bz2-1.0 g++-multilib bison gperf libxml2-utils --no-install-recommends
+RUN apt-get clean && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*
 
 # Main Android SDK
 RUN wget -qO- "http://dl.google.com/android/android-sdk_r24.0.2-linux.tgz" | tar -zxv -C /usr/local

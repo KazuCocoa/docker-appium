@@ -1,50 +1,39 @@
-FROM ubuntu:14.04
-MAINTAINER Kazuaki MATSUO
+FROM ubuntu:15.10
+MAINTAINER KazuCocoa <fly.49.89.over@gmail.com>
 
-# use mirror server
-RUN echo "deb http://jp.archive.ubuntu.com/ubuntu/ trusty main universe"> /etc/apt/sources.list
-
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
 
 # update apt-get
-RUN dpkg --add-architecture i386
-RUN apt-get update
-RUN apt-get install -y wget zip curl git
-RUN apt-get install -y openjdk-7-jdk lib32z1 lib32ncurses5 lib32bz2-1.0 g++-multilib bison gperf libxml2-utils --no-install-recommends
+RUN dpkg --add-architecture i386 && apt-get update
+RUN apt-get install -y zip curl git openjdk-8-jdk libstdc++6:i386 zlib1g:i386 libncurses5:i386 --no-install-recommends
 RUN apt-get clean && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*
 
 # Main Android SDK
-RUN wget -qO- "http://dl.google.com/android/android-sdk_r24.0.2-linux.tgz" | tar -zxv -C /usr/local
+RUN curl -L "http://dl.google.com/android/android-sdk_r24.4.1-linux.tgz" | tar -zxv -C /usr/local
 ENV ANDROID_HOME /usr/local/android-sdk-linux
-RUN echo y | $ANDROID_HOME/tools/android update sdk --no-ui --all --filter platform-tools,build-tools-21.1.2,android-16,android-18,android-21,extra-android-support,extra-google-google_play_services,extra-google-m2repository,extra-android-m2repository,extra-google-gcm,extra-google-analytics_sdk_v2,extra-google-admob_ads_sdk,extra-intel-Hardware_Accelerated_Execution_Manager,sys-img-x86-android-19,sys-img-x86-android-21
+ENV ANDROID_SDK /usr/local/android-sdk-linux
+ENV PATH ${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
 
-# Install Android NDK.
-RUN wget -qO- "http://dl.google.com/android/ndk/android-ndk-r9d-linux-x86_64.tar.bz2" | tar -zxv -C /usr/local
-ENV NDK_ROOT /usr/local/android-ndk-r9d
-RUN $NDK_ROOT/build/tools/make-standalone-toolchain.sh --platform=android-9 --install-dir=$NDK_ROOT --system=linux-x86_64
-
-# Environments
-ENV PATH $PATH:$ANDROID_HOME/tools
-ENV PATH $PATH:$ANDROID_HOME/platform-tools
-ENV PATH $PATH:$NDK_ROOT
-ENV PATH $PATH:$ANT_HOME/bin
+ENV ANDROID_SDK_COMPONENTS platform-tools,build-tools-23.1.0
+RUN echo y | android update sdk --no-ui --all --filter "${ANDROID_SDK_COMPONENTS}"
 
 # install nodejs
-RUN apt-get -y install software-properties-common
-RUN add-apt-repository ppa:chris-lea/node.js
-RUN apt-get update
-RUN apt-get -y install nodejs
+RUN curl -sL https://deb.nodesource.com/setup_4.x | bash -
+RUN apt-get install -y nodejs
 
 # create appium user
-RUN mkdir /opt/appium
-RUN useradd -m -s /bin/bash appium
-RUN chown -R appium:appium /opt/appium
-
-USER appium
-ENV HOME /home/appium
+# RUN useradd -m -s /bin/bash appium
+# USER appium
+# ENV HOME /home/appium
+# RUN mkdir /opt/appium && chown -R appium:appium /opt/appium
 
 # install appium
-RUN cd /opt/appium && npm install appium
+RUN npm install -g appium@1.4.16
 
 # Run appium
-#EXPOSE 4723
-#CMD ["node", "/opt/appium/node_modules/appium/bin/appium.js"]
+EXPOSE 4723
+CMD ["appium"]
+# CMD ["node", "/opt/appium/node_modules/appium/bin/appium.js"]
